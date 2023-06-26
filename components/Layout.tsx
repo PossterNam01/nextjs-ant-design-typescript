@@ -1,5 +1,6 @@
-import React, { useState, FunctionComponent } from 'react';
-import { Layout, Menu, Breadcrumb } from 'antd';
+'use client';
+import React, { useState, FunctionComponent, useEffect } from 'react';
+import { Layout, Menu, Breadcrumb, Button } from 'antd';
 import Link from 'next/link';
 import { withRouter, NextRouter } from 'next/router';
 import { WithRouterProps } from 'next/dist/client/with-router';
@@ -8,10 +9,16 @@ import {
   DesktopOutlined,
   DashboardOutlined,
   SettingOutlined,
+  UserOutlined,
+  CaretRightOutlined,
+  PoweroffOutlined,
+  LoginOutlined,
 } from '@ant-design/icons';
+import { LogoutUser } from '../pages/utils/PostData';
+import jwtDecode from 'jwt-decode';
 
 const { SubMenu, Item } = Menu;
-const { Sider, Content } = Layout;
+const { Sider, Content, Header } = Layout;
 
 interface Router extends NextRouter {
   path: string;
@@ -49,8 +56,17 @@ function routesMaker(pathsplit: string[]) {
   return routes;
 }
 
-const AppLayout = (props: React.PropsWithChildren<Props>) => {
+function AppLayout(props: React.PropsWithChildren<Props>) {
   const [isCollapsed, setIsCollapsed] = useState(false);
+  const [userToken, setUserToken] = useState<ITokenObject>();
+
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      const convertToObject: ITokenObject = jwtDecode(token);
+      setUserToken(convertToObject);
+    }
+  }, []);
 
   const onChangeIsCollapsed = (isCollapsed: boolean) => {
     setIsCollapsed(isCollapsed);
@@ -66,44 +82,85 @@ const AppLayout = (props: React.PropsWithChildren<Props>) => {
         collapsible
         collapsed={isCollapsed}
         onCollapse={onChangeIsCollapsed}
+        theme="light"
       >
         <Link href="/menu1">
           <a>
-            <div className="App-logo" />
+            <img src="/favicon.ico" className="App-logo" alt="" />
           </a>
         </Link>
         <Menu
-          theme="dark"
+          theme="light"
           defaultSelectedKeys={['/menu1']}
           selectedKeys={[pathsplit.pop()]}
           defaultOpenKeys={[pathsplit[1]]}
           mode="inline"
         >
-          <Item key="menu1" icon={<DesktopOutlined />}>
+          <Item icon={<DesktopOutlined />}>
+            <Link href="/menu1">
+              <a>Dashboard</a>
+            </Link>
+          </Item>
+          <Item icon={<UserOutlined />}>
+            <Link href="/director">
+              <a>Director</a>
+            </Link>
+          </Item>
+          <Item icon={<CaretRightOutlined />}>
+            <Link href="/movies">
+              <a>Movie</a>
+            </Link>
+          </Item>
+          <Item icon={<DesktopOutlined />}>
             <Link href="/menu1">
               <a>Menu 1</a>
             </Link>
           </Item>
-          <Item key="menu2" icon={<DashboardOutlined />}>
+          <Item icon={<DashboardOutlined />}>
             <Link href="/menu2">
               <a>Menu 2</a>
             </Link>
           </Item>
-          <SubMenu key="menu3" icon={<SettingOutlined />} title="Menu 3">
-            <Item key="submenu1">
+          {/* <SubMenu icon={<SettingOutlined />} title="Menu 3">
+            <Item>
               <Link href="/menu3/submenu1">
                 <a>Submenu 1</a>
               </Link>
             </Item>
-            <Item key="submenu2">
+            <Item>
               <Link href="/menu3/submenu2">
                 <a>Submenu 2</a>
               </Link>
             </Item>
-          </SubMenu>
+          </SubMenu> */}
         </Menu>
       </Sider>
       <Layout style={{ padding: '0 16px 16px' }}>
+        <Header style={{ marginTop: '10px', background: '#ffffff' }}>
+          <div className="flex flex-row-reverse">
+            <Menu>
+              {userToken ? (
+                <SubMenu icon={<UserOutlined style={{fontSize: '1.2rem'}} />} title={userToken.sub}>
+                  <Item>
+                    <Link href="/menu3/submenu1">
+                      <a>Profile</a>
+                    </Link>
+                  </Item>
+                  <Item icon={<PoweroffOutlined />}>
+                    <Button
+                      onClick={async () => await LogoutUser()}
+                      className="border-none"
+                    >
+                      Logout
+                    </Button>
+                  </Item>
+                </SubMenu>
+              ) : (
+                <Item icon={<LoginOutlined />}>Login</Item>
+              )}
+            </Menu>
+          </div>
+        </Header>
         <Breadcrumb
           style={{ margin: '16px 0' }}
           itemRender={itemRender}
@@ -122,6 +179,6 @@ const AppLayout = (props: React.PropsWithChildren<Props>) => {
       </Layout>
     </Layout>
   );
-};
+}
 
 export default withRouter(AppLayout);
