@@ -24,7 +24,12 @@ export const getToken = () => {
 };
 
 export const LogoutUser = async () => {
-  const response = await fetch('http://localhost:8080/api/logout');
+  const config = {
+    headers: {
+      ' Authorization': 'Bearer ' + localStorage.getItem('token'),
+    },
+  };
+  const response = await axios.get('http://localhost:8080/api/logout', config);
   localStorage.removeItem('token');
   window.location.href = '/authentication/sign-in';
 };

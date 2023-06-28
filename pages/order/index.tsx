@@ -6,6 +6,7 @@ import { URL_IMAGE } from '../cart';
 export default function OrderBook() {
   const [listCart, setListCart] = useState<IShoppingCartBook[]>();
   const [userToken, setUserToken] = useState<ITokenObject>();
+  const [totalPrice, setTotalPrice] = useState<number>(0);
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -19,39 +20,51 @@ export default function OrderBook() {
   const fetchData = async (username: string) => {
     const data: IShoppingCartBook[] = await GetShoppingCartByUser(username);
     if (data) {
+      const d = data.reduce((prev, cur) => {
+        return prev + cur.amount * cur.price;
+      }, 0);
+      setTotalPrice(d);
       setListCart(data);
     }
   };
 
+  const setAmount = (type: String, object: IShoppingCartBook) => {};
+
   return (
     <div className="container">
-      <div className="flex my-10">
+      <div className="flex ">
         <div className="w-3/4 bg-white px-10 py-10">
           <div className="flex justify-between border-b pb-8">
             <h1 className="font-semibold text-2xl">Shopping Cart</h1>
             <h2 className="font-semibold text-2xl">{listCart?.length} Items</h2>
           </div>
           <div className="flex mt-10 mb-5">
+            <h3 className="font-semibold text-center text-gray-600 text-xs uppercase w-1/5">
+                <input type="checkbox" />
+            </h3>
             <h3 className="font-semibold text-gray-600 text-xs uppercase w-2/5">
               Product Details
             </h3>
-            <h3 className="font-semibold text-center text-gray-600 text-xs uppercase w-1/5 text-center">
+            <h3 className="font-semibold text-center text-gray-600 text-xs uppercase w-1/5 ">
               Quantity
             </h3>
-            <h3 className="font-semibold text-center text-gray-600 text-xs uppercase w-1/5 text-center">
+            <h3 className="font-semibold text-center text-gray-600 text-xs uppercase w-1/5 ">
               Price
             </h3>
-            <h3 className="font-semibold text-center text-gray-600 text-xs uppercase w-1/5 text-center">
+            <h3 className="font-semibold text-center text-gray-600 text-xs uppercase w-1/5 ">
               Total
             </h3>
           </div>
-          <div>
+          <div className='overflow-auto'>
             {listCart &&
               listCart.map((item: IShoppingCartBook) => (
                 <div
                   key={item.bookId}
                   className="flex items-center hover:bg-gray-100 -mx-8 px-6 py-5"
                 >
+                  <span className="text-center w-1/5 font-semibold text-sm">
+                    <input type='checkbox' id='check' />
+                  </span>
                   <div className="flex w-2/5">
                     <div className="w-20">
                       <img
@@ -125,7 +138,7 @@ export default function OrderBook() {
           </h1>
           <div className="flex justify-between mt-10 mb-5">
             <span className="font-semibold text-sm uppercase">Items 3</span>
-            <span className="font-semibold text-sm">590$</span>
+            <span className="font-semibold text-sm">{totalPrice}$</span>
           </div>
           <div>
             <label className="font-medium inline-block mb-3 text-sm uppercase">
@@ -152,7 +165,7 @@ export default function OrderBook() {
           <div className="border-t mt-8">
             <div className="flex font-semibold justify-between py-6 text-sm uppercase">
               <span>Total cost</span>
-              <span>$600</span>
+              <span>${totalPrice + 10}</span>
             </div>
             <button className="bg-indigo-500 font-semibold hover:bg-indigo-600 py-3 text-sm text-white uppercase w-full">
               Checkout
