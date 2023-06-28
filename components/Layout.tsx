@@ -13,6 +13,8 @@ import {
   CaretRightOutlined,
   PoweroffOutlined,
   LoginOutlined,
+  ContainerOutlined,
+  BookOutlined,
 } from '@ant-design/icons';
 import { LogoutUser } from '../pages/utils/PostData';
 import jwtDecode from 'jwt-decode';
@@ -73,8 +75,8 @@ function AppLayout(props: React.PropsWithChildren<Props>) {
   };
 
   const pathname = props.router.pathname;
-  const pathsplit: string[] = pathname.split('/');
-  const routes = routesMaker(pathsplit);
+  const path_split: string[] = pathname.split('/');
+  const routes = routesMaker(path_split);
 
   return (
     <Layout style={{ minHeight: '100vh' }}>
@@ -92,8 +94,8 @@ function AppLayout(props: React.PropsWithChildren<Props>) {
         <Menu
           theme="light"
           defaultSelectedKeys={['/menu1']}
-          selectedKeys={[pathsplit.pop()]}
-          defaultOpenKeys={[pathsplit[1]]}
+          selectedKeys={[path_split.pop()]}
+          defaultOpenKeys={[path_split[1]]}
           mode="inline"
         >
           <Item icon={<DesktopOutlined />}>
@@ -101,7 +103,12 @@ function AppLayout(props: React.PropsWithChildren<Props>) {
               <a>Dashboard</a>
             </Link>
           </Item>
-          <Item icon={<UserOutlined />}>
+          <Item icon={<BookOutlined />}>
+            <Link href="/book">
+              <a>Book</a>
+            </Link>
+          </Item>
+          {/* <Item icon={<UserOutlined />}>
             <Link href="/director">
               <a>Director</a>
             </Link>
@@ -110,15 +117,15 @@ function AppLayout(props: React.PropsWithChildren<Props>) {
             <Link href="/movies">
               <a>Movie</a>
             </Link>
-          </Item>
+          </Item> */}
           <Item icon={<DesktopOutlined />}>
-            <Link href="/menu1">
-              <a>Menu 1</a>
+            <Link href="/cart">
+              <a>Book self</a>
             </Link>
           </Item>
           <Item icon={<DashboardOutlined />}>
-            <Link href="/menu2">
-              <a>Menu 2</a>
+            <Link href="/order">
+              <a>Book Order</a>
             </Link>
           </Item>
           {/* <SubMenu icon={<SettingOutlined />} title="Menu 3">
@@ -137,19 +144,22 @@ function AppLayout(props: React.PropsWithChildren<Props>) {
       </Sider>
       <Layout style={{ padding: '0 16px 16px' }}>
         <Header style={{ marginTop: '10px', background: '#ffffff' }}>
-          <div className="flex flex-row-reverse">
+          <div className="flex flex-row-reverse pt-2">
             <Menu>
               {userToken ? (
-                <SubMenu icon={<UserOutlined style={{fontSize: '1.2rem'}} />} title={userToken.sub}>
-                  <Item>
+                <SubMenu
+                  icon={<UserOutlined style={{ fontSize: '1.2rem' }} />}
+                  title={userToken.sub}
+                >
+                  <Item icon={<ContainerOutlined />}>
                     <Link href="/menu3/submenu1">
-                      <a>Profile</a>
+                      <a className="ml-4">Profile</a>
                     </Link>
                   </Item>
                   <Item icon={<PoweroffOutlined />}>
                     <Button
                       onClick={async () => await LogoutUser()}
-                      className="border-none"
+                      style={{ border: 'none' }}
                     >
                       Logout
                     </Button>

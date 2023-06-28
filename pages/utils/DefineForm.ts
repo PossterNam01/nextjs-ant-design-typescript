@@ -1,10 +1,10 @@
-interface Director {
+interface IDirector {
   directorId: number;
   directorName: String;
   directorImage: String;
 }
 
-interface Movie {
+interface IMovie {
   createByEmail: String;
   createById: String;
   createByName: String;
@@ -13,23 +13,24 @@ interface Movie {
   directorName: String;
   directorImage: String;
   id: number;
-  casts: Cate[];
-  movieCate: MovieCate[];
+  casts: ICate[];
+  movieCate: IMovieCate[];
   rated: String;
   releaseDate: String;
   runningTime: String;
   startNumber: number;
   titile: String;
   trailer: String;
+  thumail: String;
 }
 
-interface Cate {
+interface ICate {
   castId: number;
   castName: String;
   image: string;
 }
 
-interface MovieCate {
+interface IMovieCate {
   categoryId: number;
   categoryName: String;
   createByUserEmail: String;
@@ -50,4 +51,26 @@ interface ITokenObject {
   tokens: [];
   iss: String;
   exp: Number;
+}
+
+interface IBook{
+    bookId: number ,
+    bookName: String,
+    price: Number,
+    author: String ,
+    imageBook: String,
+}
+
+interface ICart{
+  bookId:number ,
+  username: String;
+}
+
+interface IShoppingCartBook{
+  bookId: number ,
+  bookName: String,
+  price: number,
+  author: String ,
+  bookImage: String,
+  amount: number
 }

@@ -7,7 +7,7 @@ import { Button, Form, Input } from 'antd';
 export default function Edit() {
   const router = useRouter();
   const directorId = router.query.directorId;
-  const [director, setDirector] = useState<Director>();
+  const [director, setDirector] = useState<IDirector>();
   const [currentFilePath, setCurrentFilePath] = useState<String>('');
 
   useEffect(() => {
@@ -17,20 +17,19 @@ export default function Edit() {
   const fetchData = async () => {
     if (Number(directorId) > 0) {
       const data = await GetDirector(Number(directorId));
-      setCurrentFilePath(data.directorImage)
+      setCurrentFilePath(data.directorImage);
       setDirector(data);
     }
   };
 
-  const onFinish = async (values: Director) => {
+  const onFinish = async (values: IDirector) => {
     const fields = { ...director };
     fields['directorName'] = values.directorName;
     fields['directorImage'] = currentFilePath;
+    fields['directorId'] = Number(directorId);
     setDirector(fields);
-    const result = await SaveDirector(fields);
-    if (result) {
-      window.location.href = '/director';
-    }
+    await SaveDirector(fields);
+    window.location.href = '/director';
   };
 
   const onFinishFailed = (errorInfo: any) => {

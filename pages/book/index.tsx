@@ -1,11 +1,11 @@
 'use client';
 import { useEffect, useState } from 'react';
 
-import { Divider, Radio, Table } from 'antd';
+import { Table } from 'antd';
 import type { ColumnsType, TablePaginationConfig } from 'antd/es/table';
 import { FilterValue, SorterResult } from 'antd/es/table/interface';
+import { GetBookList } from '../utils/GetData';
 import Link from 'next/link';
-import { GetDirectorList } from '../utils/GetData';
 
 interface TableParams {
   pagination?: TablePaginationConfig;
@@ -13,8 +13,8 @@ interface TableParams {
   sortOrder?: string;
   filters?: Record<string, FilterValue>;
 }
-export default function Director() {
-  const [directors, setDirectors] = useState<IDirector[]>([]);
+export default function BookList() {
+  const [books, setBooks] = useState<IBook[]>([]);
   const [loading, setLoading] = useState(false);
 
   const [tableParams, setTableParams] = useState<TableParams>({
@@ -24,30 +24,34 @@ export default function Director() {
     },
   });
 
-  const columns: ColumnsType<IDirector> = [
+  const columns: ColumnsType<IBook> = [
     {
       title: 'STT',
-      dataIndex: 'directorId',
+      dataIndex: 'bookId',
     },
     {
-      title: 'Director Name',
-      dataIndex: 'directorName',
+      title: 'Book Name',
+      dataIndex: 'bookName',
     },
     {
-      title: 'Director Image',
-      dataIndex: 'directorImage',
+      title: 'Price',
+      dataIndex: 'price',
+    },
+    {
+      title: 'Author',
+      dataIndex: 'author',
     },
     {
       title: 'Action',
-      dataIndex: 'directorId',
+      dataIndex: 'bookId',
       render: (id: number) => (
         <div className="flex">
-          <Link href={'/director/' + id}>
+          <a className="flex flex-row-reverse mx-1">
             <button className="bg-yellow-500 text-white rounded-full w-28 h-8 left-0">
               Edit
             </button>
-          </Link>
-          <a>
+          </a>
+          <a className="flex flex-row-reverse ">
             <button className="bg-red-500 text-white rounded-full w-28 h-8 left-0">
               Delete
             </button>
@@ -67,21 +71,21 @@ export default function Director() {
   }, [JSON.stringify(tableParams)]);
 
   const fetchData = async () => {
-    const res: IDirector[] = await GetDirectorList();
+    const res: IBook[] = await GetBookList();
 
     if (res) {
-      setDirectors(res);
+      setBooks(res);
     }
   };
 
   const paginationData = async () => {
     setLoading(true);
-    if (directors) {
+    if (books) {
       setTableParams({
         ...tableParams,
         pagination: {
           ...tableParams.pagination,
-          total: directors.length,
+          total: books.length,
           // 200 is mock data, you should read it from server
           // total: data.totalCount,
         },
@@ -93,7 +97,7 @@ export default function Director() {
   const handleTableChange = (
     pagination: TablePaginationConfig,
     filters: Record<string, FilterValue>,
-    sorter: SorterResult<IDirector>,
+    sorter: SorterResult<IBook>,
   ) => {
     setTableParams({
       pagination,
@@ -103,14 +107,14 @@ export default function Director() {
 
     // `dataSource` is useless since `pageSize` changed
     if (pagination.pageSize !== tableParams.pagination?.pageSize) {
-      setDirectors([]);
+      setBooks([]);
     }
   };
 
   return (
     <div className="">
       <div className="flex flex-row-reverse m-5">
-        <Link href="/director/create">
+        <Link href="/book/create">
           <button className="bg-blue-500 text-white rounded-full w-28 h-8 left-0">
             Create
           </button>
@@ -119,8 +123,8 @@ export default function Director() {
       <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
         <Table
           columns={columns}
-          rowKey={(record) => record.directorId}
-          dataSource={directors}
+          rowKey={(record) => record.bookId}
+          dataSource={books}
           pagination={tableParams.pagination}
           loading={loading}
           onChange={handleTableChange}

@@ -1,20 +1,20 @@
 'use client';
-import { UploadOutlined } from '@ant-design/icons';
-import { Button, Checkbox, Form, Input, Upload } from 'antd';
+import { Button, Form, Input, Upload } from 'antd';
 import { useState } from 'react';
-import { DeleteFile, SaveDirector, UploadFile } from '../utils/PostData';
+import {
+  DeleteFile,
+  SaveBook,
+  UploadFile,
+} from '../utils/PostData';
 
-export default function CreateDirector() {
+export default function CreateBook() {
   const [currentFilePath, setCurrentFilePath] = useState<String>('');
-  const [director, setDirector] = useState<IDirector>();
 
-  const onFinish = async (values: IDirector) => {
-    const fields = { ...director };
-    fields['directorName'] = values.directorName;
-    fields['directorImage'] = currentFilePath;
-    setDirector(fields);
-    await SaveDirector(fields);
-    window.location.href = '/director';
+  const onFinish = async (values: IBook) => {
+    values.imageBook = currentFilePath;
+    console.log(values);
+    await SaveBook(values);
+    window.location.href = '/book';
   };
 
   const onFinishFailed = (errorInfo: any) => {
@@ -52,14 +52,30 @@ export default function CreateDirector() {
         autoComplete="off"
       >
         <Form.Item
-          label="Director"
-          name="directorName"
-          rules={[{ required: true, message: 'Please input your username!' }]}
+          label="Book Name"
+          name="bookName"
+          rules={[{ required: true, message: 'Please input book name!' }]}
         >
           <Input />
         </Form.Item>
 
-        <Form.Item label="Upload File" name="directorImage">
+        <Form.Item
+          label="Price ($)"
+          name="price"
+          rules={[{ required: true, message: 'Please input price!' }]}
+        >
+          <Input type="number" min={1} />
+        </Form.Item>
+
+        <Form.Item
+          label="Author"
+          name="author"
+          rules={[{ required: true, message: 'Please input author!' }]}
+        >
+          <Input />
+        </Form.Item>
+
+        <Form.Item label="Upload File" name="imageBook">
           <input
             type="file"
             onChange={async (value) => await handleChangeFile(value)}
@@ -74,9 +90,4 @@ export default function CreateDirector() {
       </Form>
     </div>
   );
-}
-
-export async function getServerSideProps({ req }) {
-  const headers = req ? req.headers : {};
-  return { props: { headers } };
 }

@@ -13,7 +13,7 @@ interface TableParams {
   filters?: Record<string, FilterValue>;
 }
 export default function Movies() {
-  const [movies, setMovies] = useState<Movie[]>([]);
+  const [movies, setMovies] = useState<IMovie[]>([]);
   const [loading, setLoading] = useState(false);
 
   const [tableParams, setTableParams] = useState<TableParams>({
@@ -23,7 +23,7 @@ export default function Movies() {
     },
   });
 
-  const columns: ColumnsType<Movie> = [
+  const columns: ColumnsType<IMovie> = [
     {
       title: 'STT',
       dataIndex: 'id',
@@ -55,7 +55,7 @@ export default function Movies() {
     {
       title: 'Casts',
       dataIndex: 'casts',
-      render: (item: Cate[]) => (
+      render: (item: ICate[]) => (
         <div className="video-meta-genres">
           {item &&
             item.map((cast) => (
@@ -100,7 +100,7 @@ export default function Movies() {
   }, [JSON.stringify(tableParams)]);
 
   const fetchData = async () => {
-    const res: Movie[] = await GetMovieList();
+    const res: IMovie[] = await GetMovieList();
 
     if (res) {
       setMovies(res);
@@ -126,7 +126,7 @@ export default function Movies() {
   const handleTableChange = (
     pagination: TablePaginationConfig,
     filters: Record<string, FilterValue>,
-    sorter: SorterResult<Movie>,
+    sorter: SorterResult<IMovie>,
   ) => {
     setTableParams({
       pagination,

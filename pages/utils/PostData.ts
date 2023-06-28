@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { promises } from 'dns';
 
 // authentication
 export const LoginUser = async (data: FormData) => {
@@ -30,8 +31,8 @@ export const LogoutUser = async () => {
 
 // Directory
 export const SaveDirector = async function (
-  director: Director,
-): Promise<Director> {
+  director: IDirector,
+): Promise<IDirector> {
   try {
     const config = {
       headers: {
@@ -52,6 +53,30 @@ export const SaveDirector = async function (
   }
   return;
 };
+
+//book
+export const SaveBook = async function (book: IBook): Promise<IBook> {
+  try {
+    const res: IBook = await axios
+      .post('http://localhost:8080/api/view/book/save', book)
+      .then((res) => res.data);
+    return res;
+  } catch (error) {}
+  return;
+};
+// Cart
+
+export const addCart = async function (data: ICart): Promise<ICart> {
+  try {
+    const res: ICart = await axios
+      .post('http://localhost:8080/api/view/shopping_cart/add', data)
+      .then((res) => res.data);
+    return res;
+  } catch (error) {
+    return;
+  }
+};
+
 // Upload file
 // 1: movie , 2 director , 3 cast
 export const UploadFile = async function (
