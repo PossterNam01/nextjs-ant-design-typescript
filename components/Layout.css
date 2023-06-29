@@ -151,3 +151,7 @@
   font-size: 30px;
   animation: spin forwards linear infinite 1.5s;
 }
+
+.height-shopping-body{
+  height: 28rem;
+}

@@ -1,11 +1,11 @@
 'use client';
 import { useEffect, useState } from 'react';
-
-import { Table } from 'antd';
+import { Table, notification } from 'antd';
 import type { ColumnsType, TablePaginationConfig } from 'antd/es/table';
 import { FilterValue, SorterResult } from 'antd/es/table/interface';
-import { GetBookList } from '../utils/GetData';
+import { DeleteBookById, GetBookList } from '../utils/GetData';
 import Link from 'next/link';
+import { NotificationPlacement } from 'antd/lib/notification';
 
 interface TableParams {
   pagination?: TablePaginationConfig;
@@ -16,6 +16,7 @@ interface TableParams {
 export default function BookList() {
   const [books, setBooks] = useState<IBook[]>([]);
   const [loading, setLoading] = useState(false);
+  const [api, contextHolder] = notification.useNotification();
 
   const [tableParams, setTableParams] = useState<TableParams>({
     pagination: {
@@ -46,16 +47,17 @@ export default function BookList() {
       dataIndex: 'bookId',
       render: (id: number) => (
         <div className="flex">
-          <a className="flex flex-row-reverse mx-1">
+          <Link href={'/book/' + id}>
             <button className="bg-yellow-500 text-white rounded-full w-28 h-8 left-0">
               Edit
             </button>
-          </a>
-          <a className="flex flex-row-reverse ">
-            <button className="bg-red-500 text-white rounded-full w-28 h-8 left-0">
-              Delete
-            </button>
-          </a>
+          </Link>
+          <button
+            onClick={async () => await deleteBook(id)}
+            className="bg-red-500 text-white rounded-full w-28 h-8 left-0 ml-1"
+          >
+            Delete
+          </button>
         </div>
       ),
     },
@@ -76,6 +78,21 @@ export default function BookList() {
     if (res) {
       setBooks(res);
     }
+  };
+
+  const deleteBook = async (id: number) => {
+    await DeleteBookById(id);
+    openNotification('topRight');
+    fetchData();
+    paginationData();
+  };
+
+  const openNotification = (placement: NotificationPlacement) => {
+    api.info({
+      message: `Notification`,
+      description: 'Add to Cart successfully !',
+      placement,
+    });
   };
 
   const paginationData = async () => {
@@ -113,6 +130,7 @@ export default function BookList() {
 
   return (
     <div className="">
+      {contextHolder}
       <div className="flex flex-row-reverse m-5">
         <Link href="/book/create">
           <button className="bg-blue-500 text-white rounded-full w-28 h-8 left-0">
@@ -132,8 +150,4 @@ export default function BookList() {
       </div>
     </div>
   );
-}
-export async function getServerSideProps({ req }) {
-  const headers = req ? req.headers : {};
-  return { props: { headers } };
 }

@@ -1,15 +1,20 @@
 'use client';
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { SwiperSlide } from 'swiper/react';
 import { GetBookList, GetMovieList } from '../utils/GetData';
 import { CarOutlined, ShoppingCartOutlined } from '@ant-design/icons';
 import { addCart } from '../utils/PostData';
 import jwtDecode from 'jwt-decode';
+import { NotificationPlacement } from 'antd/lib/notification';
+import { notification } from 'antd';
+const Context = React.createContext({ name: 'Default' });
+
 export const URL_IMAGE = 'http://localhost:8080';
 
 export default function Cart() {
   const [books, setBooks] = useState<IBook[]>([]);
   const [userToken, setUserToken] = useState<ITokenObject>();
+  const [api, contextHolder] = notification.useNotification();
 
   useEffect(() => {
     fetchData();
@@ -28,12 +33,22 @@ export default function Cart() {
     }
   };
 
+  const openNotification = (placement: NotificationPlacement) => {
+    api.info({
+      message: `Notification`,
+      description: 'Add to Cart successfully !',
+      placement,
+    });
+  };
+
   const addShoppingCartByUser = async (data: ICart) => {
-    await addCart(data)
-  }
+    await addCart(data);
+    openNotification('topRight');
+  };
 
   return (
     <div className="flex">
+      {contextHolder}
       {books &&
         books.map((item: IBook) => (
           <div key={item.bookId}>
@@ -49,7 +64,14 @@ export default function Cart() {
                 <div className="movie-card-content text-white">
                   <p>{item.bookName}</p>
                   {item.price}$
-                  <button onClick={async () => addShoppingCartByUser({bookId: item.bookId , username: userToken.sub})}>
+                  <button
+                    onClick={async () =>
+                      addShoppingCartByUser({
+                        bookId: item.bookId,
+                        username: userToken.sub,
+                      })
+                    }
+                  >
                     <ShoppingCartOutlined style={{ fontSize: '2rem' }} />
                   </button>
                 </div>

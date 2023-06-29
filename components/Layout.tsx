@@ -15,6 +15,8 @@ import {
   LoginOutlined,
   ContainerOutlined,
   BookOutlined,
+  ShoppingCartOutlined,
+  ProfileOutlined,
 } from '@ant-design/icons';
 import { LogoutUser } from '../pages/utils/PostData';
 import jwtDecode from 'jwt-decode';
@@ -123,9 +125,19 @@ function AppLayout(props: React.PropsWithChildren<Props>) {
               <a>Book self</a>
             </Link>
           </Item>
-          <Item icon={<DashboardOutlined />}>
+          <Item icon={<ShoppingCartOutlined />}>
             <Link href="/order">
               <a>Book Order</a>
+            </Link>
+          </Item>
+          <Item icon={<ProfileOutlined />}>
+            <Link href="/order/user_history_order">
+              <a>your Order</a>
+            </Link>
+          </Item>
+          <Item icon={<ProfileOutlined />}>
+            <Link href="/order/user_history_order">
+              <a>Order Manager</a>
             </Link>
           </Item>
           {/* <SubMenu icon={<SettingOutlined />} title="Menu 3">

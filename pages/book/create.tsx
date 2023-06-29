@@ -31,7 +31,7 @@ export default function CreateBook() {
     if (files) {
       var form_data = new FormData();
       form_data.append('file', files[0]);
-      const filePath = await UploadFile(form_data, 2);
+      const filePath = await UploadFile(form_data, 4);
       if (filePath) {
         setCurrentFilePath(filePath);
       }

@@ -72,5 +72,34 @@ interface IShoppingCartBook{
   price: number,
   author: String ,
   bookImage: String,
-  amount: number
+  amount: number,
+  userId:String,
+  shoppingCartId: number
+}
+
+interface IOrder{
+  bookId: number,
+  price: number,
+  amount: number,
+  bookName: String,
+  userId: String,
+  cartId:number
+}
+
+interface IOrderHistory{
+  orderId: number, 
+  bookId: number ,
+  bookName: String,
+  price: number,
+  author: String ,
+  imageBook: String,
+  amount: number,
+  userId:String,
+  orderDate: Date, 
+  codeOrder: String,
+  status: number,
+  address: String,
+  username: String,
+  totalPrice: Number,
+  email: String
 }

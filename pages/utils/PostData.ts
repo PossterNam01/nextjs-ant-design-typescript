@@ -1,6 +1,5 @@
 import axios from 'axios';
 import { promises } from 'dns';
-
 // authentication
 export const LoginUser = async (data: FormData) => {
   try {
@@ -82,6 +81,15 @@ export const addCart = async function (data: ICart): Promise<ICart> {
   }
 };
 
+// order
+export const addToOrder = async function (data: IOrder[]) {
+  try {
+    const res  = await axios.post("http://localhost:8080/api/view/order_book",data)
+  } catch (error) {
+    console.log(error)
+  }
+}
+
 // Upload file
 // 1: movie , 2 director , 3 cast
 export const UploadFile = async function (
@@ -101,7 +109,10 @@ export const UploadFile = async function (
     API = 'http://localhost:8080/api/admin/director/image';
   } else if (type == 3) {
     API = 'http://localhost:8080/api/admin/cast/image';
+  } else if (type == 4) {
+    API = 'http://localhost:8080/api/admin/book/image';
   }
+
   try {
     const response = await axios.post(API, data, config).then((res) => {
       return res.data;
