@@ -1,7 +1,8 @@
 import jwtDecode from 'jwt-decode';
 import { useEffect, useState } from 'react';
 import { GetOrderHistoryByUser } from '../utils/GetData';
-import { URL_IMAGE } from '../cart';
+import { URL_IMAGE } from '../utils/APPCONFIG';
+import { log } from 'console';
 
 export default function OrderHistoryBook() {
   const [listCart, setListCart] = useState<IOrderHistory[]>([]);
@@ -31,6 +32,7 @@ export default function OrderHistoryBook() {
     const data: IOrderHistory[] = await GetOrderHistoryByUser(username);
     if (data) {
       setListCart(data);
+      console.log(data)
     }
   };
 
@@ -100,7 +102,11 @@ export default function OrderHistoryBook() {
                     {new Date(item.orderDate).toLocaleDateString()}
                   </span>
                   <div className="flex justify-center w-1/5">
-                    {item.status == 1 ? <span className='text-yellow-600'>AWAIT ACCESS</span> : <span className='text-green-500'>SHIPPING</span>}
+                    {item.status == 1 ? (
+                      <span className="text-yellow-600">AWAIT ACCESS</span>
+                    ) : (
+                      <span className="text-green-500">SHIPPING</span>
+                    )}
                   </div>
                 </div>
               ))}

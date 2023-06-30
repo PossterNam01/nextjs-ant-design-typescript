@@ -7,9 +7,8 @@ import { addCart } from '../utils/PostData';
 import jwtDecode from 'jwt-decode';
 import { NotificationPlacement } from 'antd/lib/notification';
 import { notification } from 'antd';
-const Context = React.createContext({ name: 'Default' });
-
-export const URL_IMAGE = 'http://localhost:8080';
+import { URL_IMAGE } from '../utils/APPCONFIG';
+const Context = React.createContext({ name: 'Default' })
 
 export default function Cart() {
   const [books, setBooks] = useState<IBook[]>([]);

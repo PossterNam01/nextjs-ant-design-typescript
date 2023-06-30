@@ -7,10 +7,7 @@ import { WithRouterProps } from 'next/dist/client/with-router';
 
 import {
   DesktopOutlined,
-  DashboardOutlined,
-  SettingOutlined,
   UserOutlined,
-  CaretRightOutlined,
   PoweroffOutlined,
   LoginOutlined,
   ContainerOutlined,
@@ -110,16 +107,6 @@ function AppLayout(props: React.PropsWithChildren<Props>) {
               <a>Book</a>
             </Link>
           </Item>
-          {/* <Item icon={<UserOutlined />}>
-            <Link href="/director">
-              <a>Director</a>
-            </Link>
-          </Item>
-          <Item icon={<CaretRightOutlined />}>
-            <Link href="/movies">
-              <a>Movie</a>
-            </Link>
-          </Item> */}
           <Item icon={<DesktopOutlined />}>
             <Link href="/cart">
               <a>Book self</a>
@@ -136,22 +123,10 @@ function AppLayout(props: React.PropsWithChildren<Props>) {
             </Link>
           </Item>
           <Item icon={<ProfileOutlined />}>
-            <Link href="/order/user_history_order">
+            <Link href="/order/order_manager">
               <a>Order Manager</a>
             </Link>
           </Item>
-          {/* <SubMenu icon={<SettingOutlined />} title="Menu 3">
-            <Item>
-              <Link href="/menu3/submenu1">
-                <a>Submenu 1</a>
-              </Link>
-            </Item>
-            <Item>
-              <Link href="/menu3/submenu2">
-                <a>Submenu 2</a>
-              </Link>
-            </Item>
-          </SubMenu> */}
         </Menu>
       </Sider>
       <Layout style={{ padding: '0 16px 16px' }}>

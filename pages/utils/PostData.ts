@@ -1,9 +1,10 @@
 import axios from 'axios';
 import { promises } from 'dns';
+import { URL_API } from './APPCONFIG';
 // authentication
 export const LoginUser = async (data: FormData) => {
   try {
-    const response = await fetch('http://localhost:8080/api/login', {
+    const response = await fetch(URL_API + '/login', {
       body: data,
       method: 'POST',
     });
@@ -25,10 +26,10 @@ export const getToken = () => {
 export const LogoutUser = async () => {
   const config = {
     headers: {
-      ' Authorization': 'Bearer ' + localStorage.getItem('token'),
+      ' Authorization': 'Bearer ' + getToken(),
     },
   };
-  const response = await axios.get('http://localhost:8080/api/logout', config);
+  const response = await axios.get(URL_API + '/logout', config);
   localStorage.removeItem('token');
   window.location.href = '/authentication/sign-in';
 };
@@ -40,11 +41,11 @@ export const SaveDirector = async function (
   try {
     const config = {
       headers: {
-        Authorization: 'Bearer ' + localStorage.getItem('token'),
+        ' Authorization': 'Bearer ' + getToken(),
       },
     };
     const response = await axios
-      .post('http://localhost:8080/api/view/directory/save', director, config)
+      .post(URL_API + '/view/directory/save', director, config)
       .then((res) => {
         res.data;
       });
@@ -62,7 +63,7 @@ export const SaveDirector = async function (
 export const SaveBook = async function (book: IBook): Promise<IBook> {
   try {
     const res: IBook = await axios
-      .post('http://localhost:8080/api/view/book/save', book)
+      .post(URL_API + '/view/book/save', book)
       .then((res) => res.data);
     return res;
   } catch (error) {}
@@ -73,7 +74,7 @@ export const SaveBook = async function (book: IBook): Promise<IBook> {
 export const addCart = async function (data: ICart): Promise<ICart> {
   try {
     const res: ICart = await axios
-      .post('http://localhost:8080/api/view/shopping_cart/add', data)
+      .post(URL_API + '/view/shopping_cart/add', data)
       .then((res) => res.data);
     return res;
   } catch (error) {
@@ -84,11 +85,11 @@ export const addCart = async function (data: ICart): Promise<ICart> {
 // order
 export const addToOrder = async function (data: IOrder[]) {
   try {
-    const res  = await axios.post("http://localhost:8080/api/view/order_book",data)
+    const res = await axios.post(URL_API + '/view/order_book', data);
   } catch (error) {
-    console.log(error)
+    console.log(error);
   }
-}
+};
 
 // Upload file
 // 1: movie , 2 director , 3 cast
@@ -96,9 +97,9 @@ export const UploadFile = async function (
   data: FormData,
   type: number,
 ): Promise<String> {
-  let API = 'http://localhost:8080/api/admin/movie/image';
+  let API = URL_API + '/admin/movie/image';
 
-  const config = {
+  const configs = {
     headers: {
       ' Authorization': 'Bearer ' + localStorage.getItem('token'),
       'Content-Type': 'multipart/form-data',
@@ -106,15 +107,15 @@ export const UploadFile = async function (
   };
 
   if (type == 2) {
-    API = 'http://localhost:8080/api/admin/director/image';
+    API = URL_API + '/admin/director/image';
   } else if (type == 3) {
-    API = 'http://localhost:8080/api/admin/cast/image';
+    API = URL_API + '/admin/cast/image';
   } else if (type == 4) {
-    API = 'http://localhost:8080/api/admin/book/image';
+    API = URL_API + 'admin/book/image';
   }
 
   try {
-    const response = await axios.post(API, data, config).then((res) => {
+    const response = await axios.post(API, data, configs).then((res) => {
       return res.data;
     });
 
@@ -131,12 +132,11 @@ export const DeleteFile = async function (
   try {
     const config = {
       headers: {
-        ' Authorization': 'Bearer ' + localStorage.getItem('token'),
+        ' Authorization': 'Bearer ' + getToken(),
       },
     };
-
     const response = await axios.post(
-      'http://localhost:8080/api/admin/delete/file',
+      URL_API + '/admin/delete/file',
       { filePath: currentFilePath },
       config,
     );

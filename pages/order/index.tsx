@@ -1,22 +1,20 @@
 import jwtDecode from 'jwt-decode';
 import { useEffect, useState } from 'react';
 import { GetShoppingCartByUser } from '../utils/GetData';
-import { URL_IMAGE } from '../cart';
 import { addToOrder } from '../utils/PostData';
+import { NotificationPlacement } from 'antd/lib/notification';
+import { notification } from 'antd';
+import { URL_IMAGE } from '../utils/APPCONFIG';
 
 export default function OrderBook() {
   const [listCart, setListCart] = useState<IShoppingCartBook[]>([]);
   const [userToken, setUserToken] = useState<ITokenObject>();
   const [totalPrice, setTotalPrice] = useState<number>(0);
   const [listChoose, setListChoose] = useState<IOrder[]>([]);
+  const [api, contextHolder] = notification.useNotification();
 
   useEffect(() => {
-    const token = localStorage.getItem('token');
-    if (token) {
-      const convertToObject: ITokenObject = jwtDecode(token);
-      setUserToken(convertToObject);
-      fetchData(convertToObject.sub);
-    }
+    fetchData();
   }, []);
 
   useEffect(() => {
@@ -28,10 +26,18 @@ export default function OrderBook() {
     }
   }, [listChoose]);
 
-  const fetchData = async (username: string) => {
-    const data: IShoppingCartBook[] = await GetShoppingCartByUser(username);
-    if (data) {
-      setListCart(data);
+  const fetchData = async () => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      const convertToObject: ITokenObject = jwtDecode(token);
+      setUserToken(convertToObject);
+      const data: IShoppingCartBook[] = await GetShoppingCartByUser(
+        convertToObject.sub,
+      );
+      if (data) {
+        setListCart(data);
+        setListChoose([]);
+      }
     }
   };
 
@@ -71,13 +77,27 @@ export default function OrderBook() {
     setListCart(newState);
   };
 
+  const openNotification = (placement: NotificationPlacement) => {
+    api.info({
+      message: `Notification`,
+      description: 'Add to Cart successfully !',
+      placement,
+    });
+  };
+
   const order = async () => {
     await addToOrder(listChoose);
-    console.log(listChoose);
+    openNotification('topRight');
+
+    const timer = setTimeout(async () => {
+      await fetchData();
+    }, 2000);
+    return () => clearTimeout(timer);
   };
 
   return (
     <div className="container">
+      {contextHolder}
       <div className="flex ">
         <div className="w-3/4 bg-white px-10 py-10">
           <div className="flex justify-between border-b ">
@@ -220,10 +240,10 @@ export default function OrderBook() {
           <div className="border-t mt-8">
             <div className="flex font-semibold justify-between py-6 text-sm uppercase">
               <span>Total cost</span>
-              <span>${totalPrice + 10}</span>
+              <span>{totalPrice > 0 ? (totalPrice + 10) : 0}$</span>
             </div>
             <button
-              onClick={async() => await order()}
+              onClick={async () => await order()}
               className="bg-indigo-500 font-semibold hover:bg-indigo-600 py-3 text-sm text-white uppercase w-full"
             >
               Checkout
